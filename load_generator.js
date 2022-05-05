@@ -11,16 +11,16 @@ const kubernetes = new Kubernetes({
 
 export const options = {
     scenarios: {
-        // create_configmap: {
-        //     exec: 'createConfigmap',
-        //     executor: 'ramping-vus',
-        //     startVUs: 0,
-        //     stages: [
-        //         { duration: '1m', target: 100 },
-        //         { duration: '1m', target: 200 },
-        //         { duration: '1m', target: 0 }
-        //     ]
-        // },
+        create_configmap: {
+            exec: 'createConfigmap',
+            executor: 'ramping-vus',
+            startVUs: 0,
+            stages: [
+                { duration: '1m', target: 100 },
+                { duration: '1m', target: 200 },
+                { duration: '1m', target: 0 }
+            ]
+        },
         list_configmaps: {
             exec: 'listConfigmaps',
             executor: 'constant-vus',
@@ -28,13 +28,13 @@ export const options = {
             duration: '1m',
             // startTime: '2m', // run after create_configmap
         },
-        // list_pods: {
-        //     exec: 'listPods',
-        //     executor: 'constant-vus',
-        //     vus: 100,
-        //     duration: '1m',
-        //     startTime: '2m', // run after create_configmap
-        // },
+        list_pods: {
+            exec: 'listPods',
+            executor: 'constant-vus',
+            vus: 100,
+            duration: '1m',
+            startTime: '2m', // run after create_configmap
+        },
         tracking_alerts: {
             exec: 'trackingAlerts',
             executor: 'constant-arrival-rate',
@@ -47,9 +47,9 @@ export const options = {
         }
     },
     thresholds: {
-        // 'checks{scenario:create_configmap}': ['rate==1'], // no errors
+        'checks{scenario:create_configmap}': ['rate==1'], // no errors
         'iteration_duration{scenario:list_configmaps}': ['p(95)<2000'], //95% of requests should be below 2s
-        // 'iteration_duration{scenario:list_pods}': ['p(95)<200'], //95% of requests should be below 200ms
+        'iteration_duration{scenario:list_pods}': ['p(95)<200'], //95% of requests should be below 200ms
         'checks{scenario:tracking_alerts}': ['rate==1'], // no alerts
     },
 
@@ -60,8 +60,8 @@ export function createConfigmap() {
     const name = uuidv4();
     kubernetes.config_maps.apply(getConfigMapYaml(name), nameSpace);
 
-    // const configMap = kubernetes.config_maps.get(name, nameSpace)
-    // check(configMap, {'ConfigMap was created': (c) => c.name === name});
+    const configMap = kubernetes.config_maps.get(name, nameSpace)
+    check(configMap, {'ConfigMap was created': (c) => c.name === name});
     sleep(1);
 }
 
@@ -96,6 +96,7 @@ export function trackingAlerts() {
         }
     })
 }
+
 export function teardown(data) {
     console.log(data)
 }
