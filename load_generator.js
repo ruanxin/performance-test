@@ -47,7 +47,7 @@ export const options = {
         }
     },
     thresholds: {
-        'checks{scenario:create_configmap}': ['rate==1'], // no errors
+        // 'checks{scenario:create_configmap}': ['rate==1'], // no errors
         'iteration_duration{scenario:list_configmaps}': ['p(95)<2000'], //95% of requests should be below 2s
         // 'iteration_duration{scenario:list_pods}': ['p(95)<200'], //95% of requests should be below 200ms
         'checks{scenario:tracking_alerts}': ['rate==1'], // no alerts
