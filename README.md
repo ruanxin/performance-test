@@ -4,6 +4,7 @@ This is a poc load test demo to verify if the concept to combine both client-sid
 - Compile k6 with xk6-exec extension
 
   Follow the steps here: https://github.com/grafana/xk6-exec
+  The k6 binary under this repository is already compiled with this extension, can be used directly.
 
 - Deploy prometheus operator to control plane cluster
     ```
@@ -35,5 +36,5 @@ This is a poc load test demo to verify if the concept to combine both client-sid
 - Port forward grafana
 - Run load test
     ```
-    k6 run load_generator.js
+    ./k6 run load_generator.js
     ```
