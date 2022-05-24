@@ -33,5 +33,3 @@ log-mothership-reconciler:
 log-istio-reconciler:
 	kubectl -n reconciler logs istio-configuration-reconciler-676c4c6d8d-m7sng
 
-
-
