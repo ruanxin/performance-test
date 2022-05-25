@@ -9,6 +9,7 @@ const VU = 160;
 const ITERATION = 20;
 
 export const options = {
+    duration: '2h',
     scenarios: {
         delete_kyma_crs: {
             exec: 'deleteKymaCRs',
