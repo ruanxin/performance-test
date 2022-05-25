@@ -5,16 +5,17 @@ import exec from 'k6/x/exec';
 
 const nameSpace = "load-test";
 
-const UV = 1;
-const ITERATION = 5;
+const VU = 160;
+const ITERATION = 20;
 
 export const options = {
     scenarios: {
         create_kyma_crs: {
             exec: 'createKymaCRs',
             executor: 'per-vu-iterations',
-            vus: UV,
+            vus: VU,
             iterations: ITERATION,
+            gracefulStop: '1m',
         },
         // tracking_alerts: {
         //     exec: 'trackingAlerts',
@@ -47,16 +48,16 @@ export function createKymaCRs() {
 }
 
 function deleteKymaCRs() {
-    for (let uv = 1; uv <= UV; uv++) {
+    for (let vu = 1; vu <= VU; vu++) {
         for (let iter = 0; iter < ITERATION; iter++) {
-            const kymaName = 'kyma-' + uv + '-' + iter;
+            const kymaName = 'kyma-' + vu + '-' + iter;
             const manifestName = 'manifest' + kymaName;
             console.log("deleting: ", manifestName)
             const cmd1 = "kubectl delete --force manifest " + manifestName
             const outManifest = exec.command('bash', ['-c', cmd1]);
             check(outManifest, {"manifest deleted": (outManifest) => outManifest.includes("force deleted")})
             console.log("deleting: ", outManifest)
-            const cmd2 = "kubectl delete --force kyma " + kymaName
+            const cmd2 = "kubectl delete kyma " + kymaName
             const outKyma = exec.command('bash', ['-c', cmd2]);
             check(outKyma, {"kyma deleted": (outKyma) => outKyma.includes("force deleted")})
 
@@ -94,6 +95,6 @@ export function setup() {
 
 export function teardown(data) {
     console.log("teardown")
-    deleteKymaCRs();
+    // deleteKymaCRs();
 }
 
