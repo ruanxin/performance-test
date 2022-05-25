@@ -23,7 +23,7 @@ export const options = {
         //     exec: 'trackingAlerts',
         //     executor: 'constant-arrival-rate',
         //     duration: '3m',
-        //     rate: 1,
+        //     rate: 1,l
         //     timeUnit: '10s',
         //     preAllocatedVUs: 1,
         //     maxVUs: 1,
@@ -41,13 +41,13 @@ export function deleteKymaCRs() {
     const kymaName = 'kyma-' + __VU + '-' + __ITER;
     const manifestName = 'manifest' + kymaName;
     console.log("deleting: ", manifestName)
-    const cmd1 = "kubectl delete manifest " + manifestName
+    const cmd1 = "kubectl delete --ignore-not-found=true manifest " + manifestName
     const outManifest = exec.command('bash', ['-c', cmd1]);
-    check(outManifest, {"manifest deleted": (outManifest) => outManifest.includes("deleted")})
+    // check(outManifest, {"manifest deleted": (outManifest) => outManifest.includes("deleted")})
     console.log("deleting: ", outManifest)
-    const cmd2 = "kubectl delete kyma " + kymaName
+    const cmd2 = "kubectl delete --ignore-not-found=true kyma " + kymaName
     const outKyma = exec.command('bash', ['-c', cmd2]);
-    check(outKyma, {"kyma deleted": (outKyma) => outKyma.includes("deleted")})
+    // check(outKyma, {"kyma deleted": (outKyma) => outKyma.includes("deleted")})
     console.log("deleting: ", outKyma)
     sleep(1);
 }
