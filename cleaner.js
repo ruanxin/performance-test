@@ -9,7 +9,7 @@ const VU = 160;
 const ITERATION = 20;
 
 export const options = {
-    duration: '2h',
+
     scenarios: {
         delete_kyma_crs: {
             exec: 'deleteKymaCRs',
@@ -17,6 +17,7 @@ export const options = {
             vus: VU,
             iterations: ITERATION,
             gracefulStop: '1m',
+            maxDuration: '2h',
         },
         // tracking_alerts: {
         //     exec: 'trackingAlerts',
