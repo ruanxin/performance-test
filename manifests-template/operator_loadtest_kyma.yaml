@@ -5,4 +5,4 @@ metadata:
   namespace: default
 spec:
   channel: rapid
-  components: # component list dynamically append during generation
+  components:

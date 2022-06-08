@@ -41,21 +41,22 @@ export function createKymaCRs() {
     const kymaName = 'kyma-' + __VU + '-' + __ITER;
     let kyma = kyma_loadtest_template.replace(/kyma-1-00/, kymaName);
     for (let i = 1; i <= 20; i++) {
+        kyma += '    - name: manifest'+ i + '-for-lt'
         kyma += '\n'
-        kyma += '\t\t- name: manifest'+ i + '-for-lt'
     }
     const cmd = "echo " + "'" + kyma + "'" + " | kubectl apply -f -"
+    console.log("kyma: ", cmd)
     const out = exec.command('bash', ['-c', cmd]);
     console.log("creating: ", kymaName);
     console.log("out: ", out);
-    check(out, {'kyma created': (out) => out.includes("created")})
+    check(out, {'kyma created': (out) => out.includes(kymaName)})
     sleep(1);
 }
 
 function deployModuleTemplate() {
     for (let i = 1; i <= 20; i++) {
         const componentName = 'manifest' + i;
-        const component = module_template_template.replace(/manifest1/, componentName);
+        const component = module_template_template.replace(/manifest1/g, componentName);
         const cmd = "echo " + "'" + component + "'" + " | kubectl apply -f -"
         const out = exec.command('bash', ['-c', cmd]);
         console.log("creating: ", componentName);

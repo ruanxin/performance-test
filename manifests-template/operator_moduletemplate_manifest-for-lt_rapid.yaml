@@ -9,7 +9,6 @@ metadata:
 spec:
   channel: rapid
   data:
-    crd-url: ""
     kind: Manifest
     resource: manifests
     apiVersion: component.kyma-project.io/v1alpha1
@@ -20,5 +19,3 @@ spec:
         releaseName: long-operation
         url:  https://storage.googleapis.com/lt-charts
         clientConfig: "Version=0.3.0"
-
-
