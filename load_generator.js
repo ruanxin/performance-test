@@ -34,11 +34,16 @@ export const options = {
     },
 
 };
-const kyma_loadtest_template = open('./operator_loadtest_kyma.yaml')
+const kyma_loadtest_template = open('./manifests-template/operator_loadtest_kyma.yaml')
+const module_template_template = open('./manifests-template/operator_moduletemplate_manifest-for-lt_rapid.yaml')
 
 export function createKymaCRs() {
     const kymaName = 'kyma-' + __VU + '-' + __ITER;
-    const kyma = kyma_loadtest_template.replace(/kyma-1-00/, kymaName);
+    let kyma = kyma_loadtest_template.replace(/kyma-1-00/, kymaName);
+    for (let i = 1; i <= 20; i++) {
+        kyma += '\n'
+        kyma += '\t\t- name: manifest'+ i + '-for-lt'
+    }
     const cmd = "echo " + "'" + kyma + "'" + " | kubectl apply -f -"
     const out = exec.command('bash', ['-c', cmd]);
     console.log("creating: ", kymaName);
@@ -47,24 +52,16 @@ export function createKymaCRs() {
     sleep(1);
 }
 
-function deleteKymaCRs() {
-    for (let vu = 1; vu <= VU; vu++) {
-        for (let iter = 0; iter < ITERATION; iter++) {
-            const kymaName = 'kyma-' + vu + '-' + iter;
-            const manifestName = 'manifest' + kymaName;
-            console.log("deleting: ", manifestName)
-            const cmd1 = "kubectl delete --force manifest " + manifestName
-            const outManifest = exec.command('bash', ['-c', cmd1]);
-            check(outManifest, {"manifest deleted": (outManifest) => outManifest.includes("force deleted")})
-            console.log("deleting: ", outManifest)
-            const cmd2 = "kubectl delete kyma " + kymaName
-            const outKyma = exec.command('bash', ['-c', cmd2]);
-            check(outKyma, {"kyma deleted": (outKyma) => outKyma.includes("force deleted")})
-
-            console.log("deleting: ", outKyma)
-
-            sleep(1);
-        }
+function deployModuleTemplate() {
+    for (let i = 1; i <= 20; i++) {
+        const componentName = 'manifest' + i;
+        const component = module_template_template.replace(/manifest1/, componentName);
+        const cmd = "echo " + "'" + component + "'" + " | kubectl apply -f -"
+        const out = exec.command('bash', ['-c', cmd]);
+        console.log("creating: ", componentName);
+        console.log("out: ", out);
+        check(out, {'component created': (out) => out.includes(componentName)})
+        sleep(1);
     }
 }
 export function trackingAlerts() {
@@ -90,7 +87,7 @@ export function trackingAlerts() {
 
 
 export function setup() {
-
+    deployModuleTemplate()
 }
 
 export function teardown(data) {

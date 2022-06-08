@@ -1,0 +1,5 @@
+# Default values for kyma-load-test.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+payLoad: "content to be replaced"
