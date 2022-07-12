@@ -23,16 +23,18 @@ REMOTE_SIGNED_DESCRIPTOR="./remote-component-descriptor-signed.yaml"
 
 MODULE_TEMPLATE="./generated-module-template.yaml"
 MODULE_TEMPLATE_CHANNEL="stable"
-MODULE_NAME="kyma-project.io/module/example"
-MODULE_VERSION="v0.0.23"
+MODULE_NAME="kyma-project.io/module/manifest1"
+MODULE_VERSION="v0.0.28"
 
 REGISTRY_NAME="operator-test-registry"
 REGISTRY_HOST="ghcr.io"
+#REGISTRY_HOST="localhost"
 REGISTRY_URL="${REGISTRY_HOST}/ruanxin"
+#REGISTRY_URL="${REGISTRY_HOST}:5000"
+CHART_NAME="kyma-load-test"
 
-
+rm -rf "${DATA_DIR}/${CHART_NAME}"
 helm repo add load-test-charts https://storage.googleapis.com/load-test-charts
-helm repo update
 helm pull load-test-charts/kyma-load-test --version=0.3.0 --untar --untardir ${DATA_DIR}
 
 #if k3d registry get ${REGISTRY_NAME} | grep -q ${REGISTRY_NAME}; then
@@ -60,7 +62,7 @@ openssl genpkey -algorithm RSA -out ${PRIVATE_KEY}
 rm ${PUBLIC_KEY}
 openssl rsa -in ${PRIVATE_KEY} -pubout > ${PUBLIC_KEY}
 component-cli ca signatures sign rsa ${REGISTRY_URL} ${MODULE_NAME} ${MODULE_VERSION} --upload-base-url ${REGISTRY_URL}/signed --recursive --signature-name ${SIGNATURE_NAME} --private-key ${PRIVATE_KEY}
-component-cli ca signatures verify rsa ${REGISTRY_URL}/signed ${MODULE_NAME} ${MODULE_VERSION} --signature-name ${SIGNATURE_NAME} --public-key ${PUBLIC_KEY}
+component-cli ca signatures verify rsa ${REGISTRY_URL}/signed ${MODULE_NAME} ${MODULE_VERSION} --signature-name ${SIGNATURE_NAME} --public-key ${PUBLIC_KEY} -v 7
 
 cat <<EOF > ${PUBLIC_KEY_VERIFICATION_SECRET}
 apiVersion: v1

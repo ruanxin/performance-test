@@ -5,8 +5,8 @@ import exec from 'k6/x/exec';
 
 const nameSpace = "load-test";
 
-const VU = 160;
-const ITERATION = 20;
+const VU = 20;
+const ITERATION = 200;
 
 export const options = {
     scenarios: {
@@ -38,17 +38,15 @@ const kyma_loadtest_template = open('./manifests-template/operator_loadtest_kyma
 const module_template_template = open('./manifests-template/operator_moduletemplate_manifest-for-lt_rapid.yaml')
 
 export function createKymaCRs() {
-    const kymaName = 'kyma-' + __VU + '-' + __ITER;
+    const kymaName = 'kyma-900' + __VU + '-' + __ITER;
     let kyma = kyma_loadtest_template.replace(/kyma-1-00/, kymaName);
     for (let i = 1; i <= 20; i++) {
         kyma += '    - name: manifest'+ i + '-for-lt'
         kyma += '\n'
     }
     const cmd = "echo " + "'" + kyma + "'" + " | kubectl apply -f -"
-    console.log("kyma: ", cmd)
     const out = exec.command('bash', ['-c', cmd]);
     console.log("creating: ", kymaName);
-    console.log("out: ", out);
     check(out, {'kyma created': (out) => out.includes(kymaName)})
     sleep(1);
 }

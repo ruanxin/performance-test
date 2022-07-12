@@ -1,8 +1,0 @@
-apiVersion: operator.kyma-project.io/v1alpha1
-kind: Kyma
-metadata:
-  name: kyma-1-00
-  namespace: default
-spec:
-  channel: rapid
-  components:
