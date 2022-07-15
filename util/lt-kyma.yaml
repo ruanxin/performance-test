@@ -1,0 +1,13 @@
+apiVersion: operator.kyma-project.io/v1alpha1
+kind: Kyma
+metadata:
+  name: kyma-sample
+  namespace: default
+spec:
+  profile: production
+  channel: stable
+  sync:
+    enabled: false
+  modules:
+    - name: manifest1
+      controller: manifest

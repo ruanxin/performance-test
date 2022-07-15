@@ -1,0 +1,82 @@
+apiVersion: operator.kyma-project.io/v1alpha1
+kind: ModuleTemplate
+metadata:
+  name: moduletemplate-sample-manifest
+  namespace: default
+  labels:
+    "operator.kyma-project.io/managed-by": "kyma-operator"
+    "operator.kyma-project.io/controller-name": "manifest"
+    "operator.kyma-project.io/module-name": "manifest1"
+    "operator.kyma-project.io/profile": "production"
+  annotations:
+    "operator.kyma-project.io/module-version": "v0.0.33"
+    "operator.kyma-project.io/module-provider": "internal"
+    "operator.kyma-project.io/descriptor-schema-version": "v2"
+    "operator.kyma-project.io/control-signature-name": "kyma-module-signature"
+    "operator.kyma-project.io/generated-at": "2022-07-12T09:00:36Z"
+spec:
+  channel: stable
+  data:
+    kind: Manifest
+    resource: manifests
+    apiVersion: component.kyma-project.io/v1alpha1
+  descriptor:
+    component:
+      componentReferences: []
+      name: kyma-project.io/module/manifest1
+      provider: internal
+      repositoryContexts:
+        - baseUrl: ghcr.io/ruanxin
+          componentNameMapping: urlPath
+          type: ociRegistry
+        - baseUrl: ghcr.io/ruanxin/signed
+          componentNameMapping: urlPath
+          type: ociRegistry
+      resources:
+        - access:
+            digest: sha256:9d37fb366e4371b44c94496f3db276bd6f3a1019c9d44077b689c68ec6486c1e
+            type: localOciBlob
+          digest:
+            hashAlgorithm: sha256
+            normalisationAlgorithm: genericBlobDigest/v1
+            value: 9d37fb366e4371b44c94496f3db276bd6f3a1019c9d44077b689c68ec6486c1e
+          name: config
+          relation: local
+          type: yaml
+          version: v0.0.33
+        - access:
+            digest: sha256:926ede0981b98084c1e386e720365a6f19b0030f1ff01b7a71aebbe53305cc34
+            type: localOciBlob
+          digest:
+            hashAlgorithm: sha256
+            normalisationAlgorithm: genericBlobDigest/v1
+            value: 926ede0981b98084c1e386e720365a6f19b0030f1ff01b7a71aebbe53305cc34
+          name: kyma-load-test
+          relation: local
+          type: helm-chart
+          version: v0.0.33
+      sources: []
+      version: v0.0.33
+    meta:
+      schemaVersion: v2
+    signatures:
+      - digest:
+          hashAlgorithm: sha256
+          normalisationAlgorithm: jsonNormalisation/v1
+          value: 0e7d61c9ffa3cf3a7c662f3d51107441b896d10e18caf9cec78a74b6d7a3da92
+        name: kyma-module-signature
+        signature:
+          algorithm: RSASSA-PKCS1-V1_5
+          mediaType: application/x-pem-file
+          value: |
+            -----BEGIN SIGNATURE-----
+            Signature Algorithm: RSASSA-PKCS1-V1_5
+            
+            fzyQg7R9OjHcsVqEfl+O+AdnEiGMLcjM4OaMCuALS+sIY5WLuPEm9mIOQMHuYTzD
+            MvjNUVkhp1SW/srGL75/+ZorupJIgajkHX8AuBLRVKrirYlqMpgJZow5y3gAus+U
+            4uhwRUZboLhMZAbvz9gKNElCkkJZzTvHmmDlR2S9EUw2aE1MfSf5jGcIKAViL6kM
+            TEK95xiJzquPaex5WK02zMR+NnoiDON1LfjCvMgW+9g7gOfAX9HWdPujrosBiq6e
+            9jkCQonguVci0MjfIiOsE1+z1muoTsKGANKGDOpSJ+SNJITx/C50A+ZTCLmJUFIV
+            2XImI9QqGyH8By0vRdk95A==
+            -----END SIGNATURE-----
+    

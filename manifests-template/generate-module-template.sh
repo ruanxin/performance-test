@@ -1,3 +1,4 @@
+#! /bin/bash
 indent() {
   local indentSize=1
   local indent=1
@@ -24,8 +25,11 @@ REMOTE_SIGNED_DESCRIPTOR="./remote-component-descriptor-signed.yaml"
 MODULE_TEMPLATE="./generated-module-template.yaml"
 MODULE_TEMPLATE_CHANNEL="stable"
 MODULE_NAME="kyma-project.io/module/manifest1"
-MODULE_VERSION="v0.0.28"
+MODULE_VERSION="v0.0.33"
+MODULE_PROFILE="production"
 
+# this requires a k3d registry with a cluster
+# e.g. k3d cluster create operator-test --registry-create operator-test-registry.localhost:50241
 REGISTRY_NAME="operator-test-registry"
 REGISTRY_HOST="ghcr.io"
 #REGISTRY_HOST="localhost"
@@ -35,7 +39,7 @@ CHART_NAME="kyma-load-test"
 
 rm -rf "${DATA_DIR}/${CHART_NAME}"
 helm repo add load-test-charts https://storage.googleapis.com/load-test-charts
-helm pull load-test-charts/kyma-load-test --version=0.3.0 --untar --untardir ${DATA_DIR}
+helm pull "load-test-charts/${CHART_NAME}" --version=0.3.0 --untar --untardir ${DATA_DIR}
 
 #if k3d registry get ${REGISTRY_NAME} | grep -q ${REGISTRY_NAME}; then
 #   echo "OCI Registry ${REGISTRY_NAME} Exists, continuing..."
@@ -43,7 +47,7 @@ helm pull load-test-charts/kyma-load-test --version=0.3.0 --untar --untardir ${D
 #   echo "OCI Registry ${REGISTRY_NAME} does not exist!"
 #   exit 1
 #fi
-
+#
 #if grep -q "${REGISTRY_HOST}" ${HOSTS_FILE}; then
 #    echo "${REGISTRY_HOST} is listed in host file, continuing..."
 #else
@@ -62,7 +66,7 @@ openssl genpkey -algorithm RSA -out ${PRIVATE_KEY}
 rm ${PUBLIC_KEY}
 openssl rsa -in ${PRIVATE_KEY} -pubout > ${PUBLIC_KEY}
 component-cli ca signatures sign rsa ${REGISTRY_URL} ${MODULE_NAME} ${MODULE_VERSION} --upload-base-url ${REGISTRY_URL}/signed --recursive --signature-name ${SIGNATURE_NAME} --private-key ${PRIVATE_KEY}
-component-cli ca signatures verify rsa ${REGISTRY_URL}/signed ${MODULE_NAME} ${MODULE_VERSION} --signature-name ${SIGNATURE_NAME} --public-key ${PUBLIC_KEY} -v 7
+component-cli ca signatures verify rsa ${REGISTRY_URL}/signed ${MODULE_NAME} ${MODULE_VERSION} --signature-name ${SIGNATURE_NAME} --public-key ${PUBLIC_KEY}
 
 cat <<EOF > ${PUBLIC_KEY_VERIFICATION_SECRET}
 apiVersion: v1
@@ -96,14 +100,13 @@ metadata:
   labels:
     "operator.kyma-project.io/managed-by": "${OPERATOR_NAME}"
     "operator.kyma-project.io/controller-name": "manifest"
+    "operator.kyma-project.io/module-name": "$(basename $MODULE_NAME)"
+    "operator.kyma-project.io/profile": "${MODULE_PROFILE}"
   annotations:
-    "operator.kyma-project.io/module-name": "$(yq e ".component.name" remote-component-descriptor-signed.yaml)"
     "operator.kyma-project.io/module-version": "$(yq e ".component.version" remote-component-descriptor-signed.yaml)"
     "operator.kyma-project.io/module-provider": "$(yq e ".component.provider" remote-component-descriptor-signed.yaml)"
     "operator.kyma-project.io/descriptor-schema-version": "$(yq e ".meta.schemaVersion" remote-component-descriptor-signed.yaml)"
     "operator.kyma-project.io/control-signature-name": "$(yq e ".signatures[0].name" remote-component-descriptor-signed.yaml)"
-    "operator.kyma-project.io/control-signature-algorithm": "$(yq e ".signatures[0].digest.hashAlgorithm" remote-component-descriptor-signed.yaml)"
-    "operator.kyma-project.io/control-signature-value": "$(yq e ".signatures[0].digest.value" remote-component-descriptor-signed.yaml)"
     "operator.kyma-project.io/generated-at": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 spec:
   channel: ${MODULE_TEMPLATE_CHANNEL}
@@ -116,4 +119,4 @@ $(cat ${REMOTE_SIGNED_DESCRIPTOR} | indent 4)
 EOF
 
 echo "Generated ModuleTemplate at ${MODULE_TEMPLATE}"
-kubectl apply -f ${MODULE_TEMPLATE}
+#kubectl apply -f ${MODULE_TEMPLATE}
