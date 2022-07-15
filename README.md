@@ -8,10 +8,7 @@ This is a poc load test demo to verify if the concept to combine both client-sid
 
 - Deploy prometheus operator to control plane cluster
     ```
-    git clone https://github.com/prometheus-operator/kube-prometheus.git
-    cd kube-prometheus
-    git checkout release-0.10
-    
+    cd kube-prometheus-with-pvc
     kubectl apply --server-side -f manifests/setup
     until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
     kubectl apply -f manifests/
