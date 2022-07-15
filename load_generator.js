@@ -35,7 +35,7 @@ export const options = {
 
 };
 const kyma_loadtest_template = open('./manifests-template/operator_loadtest_kyma.yaml')
-const module_template_template = open('./manifests-template/operator_moduletemplate_manifest-for-lt_rapid.yaml')
+const module_template_template = open('./util/lt-module-template.yaml')
 
 export function createKymaCRs() {
     const kymaName = 'kyma-900' + __VU + '-' + __ITER;
@@ -51,9 +51,8 @@ export function createKymaCRs() {
     sleep(1);
 }
 
-function deployModuleTemplate() {
-    for (let i = 1; i <= 20; i++) {
-        const componentName = 'manifest' + i;
+function deployModuleTemplate(index) {
+        const componentName = 'manifest' + index;
         const component = module_template_template.replace(/manifest1/g, componentName);
         const cmd = "echo " + "'" + component + "'" + " | kubectl apply -f -"
         const out = exec.command('bash', ['-c', cmd]);
@@ -61,8 +60,8 @@ function deployModuleTemplate() {
         console.log("out: ", out);
         check(out, {'component created': (out) => out.includes(componentName)})
         sleep(1);
-    }
 }
+
 export function trackingAlerts() {
     const apiToken = 'eyJrIjoiYTJpUTRSeVJuRTVUc1BDN3Y5SHdLalNLVGs3N3VBdXkiLCJuIjoidGVzdCIsImlkIjoxfQ==';
     const requestHeaders = {
