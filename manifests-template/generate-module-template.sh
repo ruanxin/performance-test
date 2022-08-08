@@ -21,11 +21,12 @@ SIGNATURE_NAME="kyma-module-signature"
 
 REMOTE_DESCRIPTOR="./remote-component-descriptor.yaml"
 REMOTE_SIGNED_DESCRIPTOR="./remote-component-descriptor-signed.yaml"
+SIGNED_PATH="signed"
 
 MODULE_TEMPLATE="./generated-module-template.yaml"
 MODULE_TEMPLATE_CHANNEL="stable"
 MODULE_NAME="kyma-project.io/module/manifest1"
-MODULE_VERSION="v0.0.33"
+MODULE_VERSION="v0.0.53"
 MODULE_PROFILE="production"
 
 # this requires a k3d registry with a cluster
@@ -38,8 +39,8 @@ REGISTRY_URL="${REGISTRY_HOST}/ruanxin"
 CHART_NAME="kyma-load-test"
 
 rm -rf "${DATA_DIR}/${CHART_NAME}"
-helm repo add load-test-charts https://storage.googleapis.com/load-test-charts
-helm pull "load-test-charts/${CHART_NAME}" --version=0.3.0 --untar --untardir ${DATA_DIR}
+helm repo add load-test-charts https://ruanxin.github.io/performance-test
+helm pull "load-test-charts/${CHART_NAME}" --version=0.4.0 --untar --untardir ${DATA_DIR}
 
 #if k3d registry get ${REGISTRY_NAME} | grep -q ${REGISTRY_NAME}; then
 #   echo "OCI Registry ${REGISTRY_NAME} Exists, continuing..."
@@ -65,8 +66,8 @@ rm ${PRIVATE_KEY}
 openssl genpkey -algorithm RSA -out ${PRIVATE_KEY}
 rm ${PUBLIC_KEY}
 openssl rsa -in ${PRIVATE_KEY} -pubout > ${PUBLIC_KEY}
-component-cli ca signatures sign rsa ${REGISTRY_URL} ${MODULE_NAME} ${MODULE_VERSION} --upload-base-url ${REGISTRY_URL}/signed --recursive --signature-name ${SIGNATURE_NAME} --private-key ${PRIVATE_KEY}
-component-cli ca signatures verify rsa ${REGISTRY_URL}/signed ${MODULE_NAME} ${MODULE_VERSION} --signature-name ${SIGNATURE_NAME} --public-key ${PUBLIC_KEY}
+component-cli ca signatures sign rsa ${REGISTRY_URL} ${MODULE_NAME} ${MODULE_VERSION} --upload-base-url ${REGISTRY_URL}/${SIGNED_PATH} --recursive --signature-name ${SIGNATURE_NAME} --private-key ${PRIVATE_KEY}
+component-cli ca signatures verify rsa ${REGISTRY_URL}/${SIGNED_PATH} ${MODULE_NAME} ${MODULE_VERSION} --signature-name ${SIGNATURE_NAME} --public-key ${PUBLIC_KEY}
 
 cat <<EOF > ${PUBLIC_KEY_VERIFICATION_SECRET}
 apiVersion: v1
@@ -87,7 +88,7 @@ kubectl apply -f ${PUBLIC_KEY_VERIFICATION_SECRET}
 rm ${REMOTE_DESCRIPTOR}
 component-cli ca remote get ${REGISTRY_URL} ${MODULE_NAME} ${MODULE_VERSION} >> ${REMOTE_DESCRIPTOR}
 rm ${REMOTE_SIGNED_DESCRIPTOR}
-component-cli ca remote get ${REGISTRY_URL}/signed ${MODULE_NAME} ${MODULE_VERSION} >> ${REMOTE_SIGNED_DESCRIPTOR}
+component-cli ca remote get ${REGISTRY_URL}/${SIGNED_PATH} ${MODULE_NAME} ${MODULE_VERSION} >> ${REMOTE_SIGNED_DESCRIPTOR}
 
 echo "Successfully generated Remote Descriptors in ${REMOTE_DESCRIPTOR} (Signed Version at ${REMOTE_SIGNED_DESCRIPTOR})"
 

@@ -3,10 +3,8 @@ import {check, sleep, fail} from 'k6';
 import http from 'k6/http';
 import exec from 'k6/x/exec';
 
-const nameSpace = "load-test";
-
-const VU = 20;
-const ITERATION = 200;
+const VU = 1;
+const ITERATION = 1;
 
 export const options = {
     scenarios: {
@@ -34,15 +32,21 @@ export const options = {
     },
 
 };
-const kyma_loadtest_template = open('./manifests-template/operator_loadtest_kyma.yaml')
-const module_template_template = open('./util/lt-module-template.yaml')
+const kyma_loadtest_template = open('./util/lt-kyma.yaml')
+const module_template_template = open('./util/lt-module-template-remote.yaml')
+const secret_template = open('./util/lt-secret-worker.yaml')
 
 export function createKymaCRs() {
-    const kymaName = 'kyma-900' + __VU + '-' + __ITER;
-    let kyma = kyma_loadtest_template.replace(/kyma-1-00/, kymaName);
+    const index = '2-' + __VU + '-' + __ITER;
+    var componentName = 'manifest' + index;
+    deployModuleTemplate(componentName)
+
+    const kymaName = 'kyma-' + index
+    deploySecret(kymaName)
+    let kyma = kyma_loadtest_template.replace(/kyma-replace-me/g, kymaName);
     for (let i = 1; i <= 20; i++) {
-        kyma += '    - name: manifest'+ i + '-for-lt'
-        kyma += '\n'
+        const moduleName = componentName +'-'+ i
+        kyma += '    - name: ' + moduleName + '\n'
     }
     const cmd = "echo " + "'" + kyma + "'" + " | kubectl apply -f -"
     const out = exec.command('bash', ['-c', cmd]);
@@ -51,15 +55,31 @@ export function createKymaCRs() {
     sleep(1);
 }
 
-function deployModuleTemplate(index) {
-        const componentName = 'manifest' + index;
-        const component = module_template_template.replace(/manifest1/g, componentName);
+function deployModuleTemplate(componentName) {
+    for (let i = 1; i <= 20; i++) {
+        const replace =  componentName  + '-'+ i
+        const component = module_template_template.replace(/replace-me/g, replace);
         const cmd = "echo " + "'" + component + "'" + " | kubectl apply -f -"
         const out = exec.command('bash', ['-c', cmd]);
-        console.log("creating: ", componentName);
         console.log("out: ", out);
-        check(out, {'component created': (out) => out.includes(componentName)})
+        console.log("creating moduletemplate: ", replace);
+        check(out, {'component created': (out) => out.includes(replace)})
         sleep(1);
+    }
+}
+
+
+function deploySecret(replace) {
+        const component = secret_template.replace(/replace-me/g, replace);
+        const cmd = "echo " + "'" + component + "'" + " | kubectl apply -f -"
+        console.log("cmd: ", cmd);
+
+        const out = exec.command('bash', ['-c', cmd]);
+        console.log("creating secret for ", replace);
+        console.log("out: ", out);
+        check(out, {'component created': (out) => out.includes(replace)})
+        sleep(1);
+
 }
 
 export function trackingAlerts() {
@@ -85,7 +105,6 @@ export function trackingAlerts() {
 
 
 export function setup() {
-    deployModuleTemplate()
 }
 
 export function teardown(data) {
