@@ -3,11 +3,20 @@ entries:
   kyma-load-test:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-07-15T11:11:37.342606+02:00"
+    created: "2022-08-11T21:38:09.258046+02:00"
+    description: A Helm chart for Kubernetes
+    digest: 73191493c87d0c07f60b1c09eaf241239307d4edecc2a5b48a0a622bc70daeb5
+    name: kyma-load-test
+    urls:
+    - https://ruanxin.github.io/performance-test/kyma-load-test-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-08-11T21:38:09.257511+02:00"
     description: A Helm chart for Kubernetes
     digest: af0ddd6130aab51d2e92592d6297259a210d52ea4738bfddfea243602e047ddc
     name: kyma-load-test
     urls:
     - https://ruanxin.github.io/performance-test/kyma-load-test-0.4.0.tgz
     version: 0.4.0
-generated: "2022-07-15T11:11:37.342007+02:00"
+generated: "2022-08-11T21:38:09.256866+02:00"

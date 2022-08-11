@@ -3,4 +3,6 @@ kind: LongOperation
 metadata:
   name: {{ include "kyma-load-test.fullname" . }}
 spec:
-  foo: {{ .Values.payLoad }}
+  constantProcessingTime: 10
+  randomProcessingTime: 5
+  bigPayload: {{ .Values.payLoad }}

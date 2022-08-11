@@ -1,0 +1,10 @@
+component:
+  componentReferences: []
+  name: kyma-project.io/module/manifest1
+  provider: internal
+  repositoryContexts: []
+  resources: []
+  sources: []
+  version: v0.0.46
+meta:
+  schemaVersion: v2
