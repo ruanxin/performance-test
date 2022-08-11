@@ -1,4 +1,4 @@
-apiVersion: kyma.kyma-project.io/v1alpha1
+apiVersion: component.kyma-project.io/v1alpha1
 kind: LongOperation
 metadata:
   name: {{ include "kyma-load-test.fullname" . }}
