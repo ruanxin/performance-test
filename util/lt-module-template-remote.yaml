@@ -4,7 +4,7 @@ metadata:
   name: replace-me
   namespace: default
   labels:
-    "operator.kyma-project.io/managed-by": "kyma-operator"
+    "operator.kyma-project.io/managed-by": lifecycle-manager
     "operator.kyma-project.io/controller-name": "manifest"
     "operator.kyma-project.io/module-name": "replace-me"
     "operator.kyma-project.io/profile": "production"
@@ -19,7 +19,7 @@ spec:
   data:
     kind: SKRModule
     resource: skrmodules
-    apiVersion: component.kyma-project.io/v1alpha1
+    apiVersion: operator.kyma-project.io/v1alpha1
     spec:
       initKey: initValue
   descriptor:
@@ -45,31 +45,31 @@ spec:
           name: config
           relation: local
           type: yaml
-          version: v0.0.53
+          version: v0.0.63
         - access:
-            digest: sha256:269dddc89f744812789673975a78e419177e5147dd2a55eeeb9154e6c827d830
+            digest: sha256:2c329b6ff7379d94a009cd039aa38e23c18e4cd720526caaa44244d80f4ca989
             type: localOciBlob
           digest:
             hashAlgorithm: sha256
             normalisationAlgorithm: genericBlobDigest/v1
-            value: 269dddc89f744812789673975a78e419177e5147dd2a55eeeb9154e6c827d830
+            value: 2c329b6ff7379d94a009cd039aa38e23c18e4cd720526caaa44244d80f4ca989
           name: crds
           relation: local
           type: crds
-          version: v0.0.53
+          version: v0.0.63
         - access:
-            digest: sha256:8a179da0bb4d5b77896f6ef3d4ce853496f45551e44287daa1df3c3e69886bea
+            digest: sha256:12c75ae33ea65dd49247564af35ab048c95dfb8ca503799a295c2f5d02febec6
             type: localOciBlob
           digest:
             hashAlgorithm: sha256
             normalisationAlgorithm: genericBlobDigest/v1
-            value: 8a179da0bb4d5b77896f6ef3d4ce853496f45551e44287daa1df3c3e69886bea
+            value: 12c75ae33ea65dd49247564af35ab048c95dfb8ca503799a295c2f5d02febec6
           name: kyma-load-test
           relation: local
           type: helm-chart
-          version: v0.0.53
+          version: v0.0.63
       sources: [ ]
-      version: v0.0.53
+      version: v0.0.63
     meta:
       schemaVersion: v2
     signatures: []

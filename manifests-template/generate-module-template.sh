@@ -8,7 +8,7 @@ indent() {
 
 HOSTS_FILE="/etc/hosts"
 
-OPERATOR_NAME="kyma-operator"
+OPERATOR_NAME="lifecycle-manager"
 
 COMPONENT_ARCHIVE="./example"
 DATA_DIR="./data"
@@ -26,7 +26,7 @@ SIGNED_PATH="signed"
 MODULE_TEMPLATE="./generated-module-template.yaml"
 MODULE_TEMPLATE_CHANNEL="stable"
 MODULE_NAME="kyma-project.io/module/manifest1"
-MODULE_VERSION="v0.0.61"
+MODULE_VERSION="v1.0.0"
 MODULE_PROFILE="production"
 
 # this requires a k3d registry with a cluster
@@ -44,7 +44,7 @@ PASSWORD=ya29.c.b0AXv0zTNbhYWunpyTtQXJ_-BXLcryi6SQkJqForyljqLsrnqVt7K6JF6tluh2uw
 rm -rf "${DATA_DIR}/${CHART_NAME}"
 helm repo update
 helm repo add load-test-charts https://ruanxin.github.io/performance-test
-helm pull "load-test-charts/${CHART_NAME}" --version=0.5.0 --untar --untardir ${DATA_DIR}
+helm pull "load-test-charts/${CHART_NAME}" --version=0.6.0 --untar --untardir ${DATA_DIR}
 
 #if k3d registry get ${REGISTRY_NAME} | grep -q ${REGISTRY_NAME}; then
 #   echo "OCI Registry ${REGISTRY_NAME} Exists, continuing..."
@@ -119,7 +119,7 @@ spec:
   data:
     kind: Manifest
     resource: manifests
-    apiVersion: component.kyma-project.io/v1alpha1
+    apiVersion: operator.kyma-project.io/v1alpha1
   descriptor:
 $(cat ${REMOTE_SIGNED_DESCRIPTOR} | indent 4)
 EOF

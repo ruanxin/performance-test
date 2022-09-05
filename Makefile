@@ -1,4 +1,4 @@
-#export KUBECONFIG=/Users/I552416/Downloads/kubeconfig--kyma-prow--rec-wkly-lt.yaml
+export KUBECONFIG=/Users/I552416/Downloads/kubeconfig--jellyfish--ctrlplane.yaml
 #scale_down:
 #	kubectl scale deploy  mothership-reconciler  --replicas=0 -n reconciler
 #
