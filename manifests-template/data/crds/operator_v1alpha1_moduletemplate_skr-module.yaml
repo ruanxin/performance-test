@@ -1,12 +1,12 @@
 apiVersion: operator.kyma-project.io/v1alpha1
 kind: ModuleTemplate
 metadata:
-  name: replace-me
+  name: moduletemplate-sample-skr-module
   namespace: default
   labels:
-    "operator.kyma-project.io/managed-by": lifecycle-manager
+    "operator.kyma-project.io/managed-by": "lifecycle-manager"
     "operator.kyma-project.io/controller-name": "manifest"
-    "operator.kyma-project.io/module-name": "replace-me"
+    "operator.kyma-project.io/module-name": "skr-module"
     "operator.kyma-project.io/profile": "production"
   annotations:
     "operator.kyma-project.io/module-version": "v0.0.48"
@@ -24,7 +24,7 @@ spec:
       initKey: initValue
   descriptor:
     component:
-      componentReferences: [ ]
+      componentReferences: []
       name: kyma-project.io/module/manifest1
       provider: internal
       repositoryContexts:
@@ -45,32 +45,31 @@ spec:
           name: config
           relation: local
           type: yaml
-          version: v1.0.3
+          version: v0.0.53
         - access:
-            digest: sha256:e1ef2b517e3f46341a72446fd623d8f0e341a8111ef2e9084f80cbb64cdb1638
+            digest: sha256:269dddc89f744812789673975a78e419177e5147dd2a55eeeb9154e6c827d830
             type: localOciBlob
           digest:
             hashAlgorithm: sha256
             normalisationAlgorithm: genericBlobDigest/v1
-            value: e1ef2b517e3f46341a72446fd623d8f0e341a8111ef2e9084f80cbb64cdb1638
+            value: 269dddc89f744812789673975a78e419177e5147dd2a55eeeb9154e6c827d830
           name: crds
           relation: local
           type: crds
-          version: v1.0.3
+          version: v0.0.53
         - access:
-            digest: sha256:827162f074aff18793d9adafdefa84d2cd08b521c724bbc4975db032a546c31f
+            digest: sha256:8a179da0bb4d5b77896f6ef3d4ce853496f45551e44287daa1df3c3e69886bea
             type: localOciBlob
           digest:
             hashAlgorithm: sha256
             normalisationAlgorithm: genericBlobDigest/v1
-            value: 827162f074aff18793d9adafdefa84d2cd08b521c724bbc4975db032a546c31f
+            value: 8a179da0bb4d5b77896f6ef3d4ce853496f45551e44287daa1df3c3e69886bea
           name: kyma-load-test
           relation: local
           type: helm-chart
-          version: v1.0.3
-      sources: [ ]
-      version: v1.0.3
+          version: v0.0.53
+      sources: []
+      version: v0.0.53
     meta:
       schemaVersion: v2
     signatures: []
-    

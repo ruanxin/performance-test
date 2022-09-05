@@ -16,12 +16,6 @@ This is a poc load test demo to verify if the concept to combine both client-sid
 
 - Create grafana api token and replace `apiToken` in `trackingAlerts()` (`load_generator.js`)
 
-- Deploy kyma operator and manifest operator to control plane cluster
-  - add manifest crds and missing permission
-  ```
-  k apply -f https://raw.githubusercontent.com/kyma-project/kyma-operator/main/operator/config/samples/component-integration-installed/rbac/component_rbac.yaml
-  ```
-  
 # Run test
 
 - Port forward grafana
@@ -29,24 +23,9 @@ This is a poc load test demo to verify if the concept to combine both client-sid
     ```
     ./k6 run load_generator.js
     ```
-# Finding
-
-## Key indicates can be tweaked
-
-### Controller Manager Options
-#### SyncPeriod
-> SyncPeriod determines the minimum frequency at which watched resources are reconciled. A lower period will correct entropy more quickly, but reduce responsiveness to change if there are many watched resources. Change this value only if you know what you are doing. Defaults to 10 hours if unset.
-
-It assigns to Cache (Informer) `cache.Options.Resync`
-
-#### DeltaFIFO
-	// Replace will delete the contents of the store, using instead the
-	// given list. Store takes ownership of the list, you should not reference
-	// it after calling this function.
-	Replace([]interface{}, string) error
-
-	// Resync is meaningless in the terms appearing here but has
-	// meaning in some implementations that have non-trivial
-	// additional behavior (e.g., DeltaFIFO).
-	Resync() error
-####
+# Update helm chart
+- update `Chart.yaml` version
+- run `helm package kyma-load-test`
+- move generated package to /docs
+- reindex helm repo `helm repo index docs --url https://ruanxin.github.io/performance-test/`
+- commit changes

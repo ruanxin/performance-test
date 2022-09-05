@@ -4,7 +4,6 @@ metadata:
   name: kyma-replace-me
   namespace: default
 spec:
-  profile: production
   channel: stable
   sync:
     enabled: true
